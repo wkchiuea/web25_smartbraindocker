@@ -13,12 +13,7 @@ const auth = require('./controllers/authorization');
 //Database Setup - add your own information here based on the DB you created
 const db = knex({
   client: 'pg',
-  connection: {
-    host : '127.0.0.1',
-    user : 'aneagoie',
-    password : '',
-    database : 'smart-brain'
-  }
+  connection: process.env.POSTGRES_URI
 });
 
 const app = express();
