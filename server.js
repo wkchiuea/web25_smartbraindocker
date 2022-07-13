@@ -1,8 +1,9 @@
 const express = require('express');
-const bodyParser = require('body-parser'); // latest version of exressJS now comes with Body-Parser!
+const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
+const morgan = require('morgan');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
@@ -10,7 +11,7 @@ const profile = require('./controllers/profile');
 const image = require('./controllers/image');
 const auth = require('./controllers/authorization');
 
-//Database Setup - add your own information here based on the DB you created
+//Database Setup
 const db = knex({
   client: 'pg',
   connection: process.env.POSTGRES_URI
@@ -18,8 +19,20 @@ const db = knex({
 
 const app = express();
 
-app.use(cors())
-app.use(express.json()); // latest version of exressJS now comes with Body-Parser!
+const whitelist = ['http://localhost:3001']
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
+}
+
+app.use(morgan('combined'));
+app.use(cors(corsOptions))
+app.use(bodyParser.json());
 
 app.post('/signin', signin.signinAuthentication(db, bcrypt))
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
