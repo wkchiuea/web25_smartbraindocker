@@ -27,8 +27,8 @@ services:
     #   - ./.private/api-keys.env "Another way to insert env variables"
     container_name: backend
     build: ./
-    volumes:
-      - ./:/usr/src/smart-brain-api
+    volumes: # access file system of Docker container
+      - ./:/usr/src/smart-brain-api # map local dir to host filesystem, ~ mounting
     command: npm start
     working_dir: /usr/src/smart-brain-api
     ports:
@@ -36,6 +36,6 @@ services:
     environment:
       POSTGRES_URI: postgres://admin:password@postgres:5432/smart-brain
       REDIS_URI: redis://redis:6379
-    links:
-      - postgres
-      - redis
+    # links: # no use now
+    #   - postgres
+    #   - redis
